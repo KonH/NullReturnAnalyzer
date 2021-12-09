@@ -2,7 +2,7 @@
 
 ## Summary
 
-Roslyn analyzer aims to reduce hidden null reference exceptions for projects which is not ready for [Nullable Reference Types](https://docs.microsoft.com/en-us/dotnet/csharp/nullable-references) (e.g. some Unity projects).  
+Roslyn analyzer aims to reduce hidden null reference exceptions for projects which are not ready for [Nullable Reference Types](https://docs.microsoft.com/en-us/dotnet/csharp/nullable-references) (e.g. some Unity projects).  
 Analyzer enforce you to use [CanBeNull] (from [JetBrains](https://www.jetbrains.com/help/resharper/Reference__Code_Annotation_Attributes.html) or any custom with that name) attribute on obviously null-return methods.  
 Code fix is also provided.
 
