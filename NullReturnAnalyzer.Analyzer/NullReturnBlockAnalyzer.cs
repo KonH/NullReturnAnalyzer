@@ -125,7 +125,9 @@ namespace NullReturnAnalyzer.Analyzer {
 				if (
 					(kind == OperationKind.FieldReference) ||
 					(kind == OperationKind.PropertyReference) ||
-					(kind == OperationKind.ConditionalAccess)
+					(kind == OperationKind.ConditionalAccess) ||
+					(kind == OperationKind.SimpleAssignment) ||
+					(kind == OperationKind.ArrayInitializer)
 				) {
 					return true;
 				}

@@ -329,6 +329,73 @@ public sealed class Samples {
 		}
 
 		[Test]
+		public async Task IsWarningNotFoundOnConstructorCallReturn() {
+			var code = @"
+using System;
+
+public sealed class Samples {
+	public sealed class CanBeNullAttribute : Attribute {}
+
+	public sealed class TestClass {
+		public object Value;
+	}
+
+	[CanBeNull]
+	object GetNullObject() => null;
+
+	// No warnings
+	object GetTestInstance() => new TestClass() { Value = GetNullObject() };
+}";
+			await AnalyzerVerifier.VerifyAnalyzerAsync(code, Array.Empty<DiagnosticResult>());
+		}
+
+		[Test]
+		public async Task IsWarningNotFoundOnComplexConstructorCallReturn() {
+			var code = @"
+using System;
+
+public sealed class Samples {
+	public sealed class CanBeNullAttribute : Attribute {}
+
+	public sealed class TestClass1 {
+		public object Value;
+	}
+
+	public sealed class TestClass2 {
+		public TestClass1 Value;
+	}
+
+	[CanBeNull]
+	object GetNullObject() => null;
+
+	// No warnings
+	object GetTestInstance() => new TestClass2() { Value = new TestClass1 { Value = GetNullObject() } };
+}";
+			await AnalyzerVerifier.VerifyAnalyzerAsync(code, Array.Empty<DiagnosticResult>());
+		}
+
+		[Test]
+		public async Task IsWarningNotFoundOnArrayConstructorCallReturn() {
+			var code = @"
+using System;
+
+public sealed class Samples {
+	public sealed class CanBeNullAttribute : Attribute {}
+
+	public sealed class TestClass {
+		public object[] Values;
+	}
+
+	[CanBeNull]
+	object GetNullObject() => null;
+
+	// No warnings
+	object GetTestInstance() => new TestClass() { Values = new[] { GetNullObject() } };
+}";
+			await AnalyzerVerifier.VerifyAnalyzerAsync(code, Array.Empty<DiagnosticResult>());
+		}
+
+		[Test]
 		public async Task IsWarningFoundOnNullChainReturn() {
 			var code = @"
 using System;
