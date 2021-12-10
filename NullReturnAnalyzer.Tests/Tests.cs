@@ -31,6 +31,27 @@ public sealed class Samples {
 		}
 
 		[Test]
+		public async Task IsWarningFoundOnAlwaysNullReturnInSeveralMethods() {
+			var code = @"
+public sealed class Samples {
+	// Warning required
+	object GetAlwaysNullObject1() {
+		return null;
+	}
+
+	// Warning required
+	object GetAlwaysNullObject2() {
+		return null;
+	}
+}";
+			var expected = new[] {
+				DiagnosticResult.CompilerWarning(ExpectedValueId).WithLocation(4, 9).WithMessage(ExpectedValueMessage),
+				DiagnosticResult.CompilerWarning(ExpectedValueId).WithLocation(9, 9).WithMessage(ExpectedValueMessage),
+			};
+			await AnalyzerVerifier.VerifyAnalyzerAsync(code, expected);
+		}
+
+		[Test]
 		public async Task IsWarningFoundOnAlwaysNullExpressionReturn() {
 			var code = @"
 public sealed class Samples {
@@ -50,6 +71,27 @@ public sealed class Samples {
 	// Warning required
 	object GetSometimesNullObject1(int x) {
 		if ( x % 10 == 0 ) {
+			return null;
+		}
+		return new object();
+	}
+}";
+			var expected = new[] {
+				DiagnosticResult.CompilerWarning(ExpectedValueId).WithLocation(4, 9).WithMessage(ExpectedValueMessage),
+			};
+			await AnalyzerVerifier.VerifyAnalyzerAsync(code, expected);
+		}
+
+		[Test]
+		public async Task IsWarningNotDuplicated() {
+			var code = @"
+public sealed class Samples {
+	// Single warning required
+	object GetSometimesNullObject1(int x) {
+		if ( x % 10 == 0 ) {
+			return null;
+		}
+		if ( x % 7 == 0 ) {
 			return null;
 		}
 		return new object();
